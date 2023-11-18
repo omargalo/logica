@@ -1,2 +1,2 @@
-# Logica y Programación Estructurada
+# Lógica y Programación Estructurada
 Ejercicios
