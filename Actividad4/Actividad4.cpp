@@ -1,3 +1,5 @@
+// Actividad 4: Proyecto Integrador Etapa 1
+// Equipo: 17
 #include <iostream>
 #include <string>
 #include <vector>
@@ -42,7 +44,7 @@ public:
         artista = leerLinea();
         cout << "Ingresa nombre del album: ";
         nombreAlbum = leerLinea();
-        cout << "Ingresa año de lanzamiento: ";
+        cout << "Ingresa fecha de lanzamiento: ";
         cin >> aLanzamiento;
         cin.ignore(10000, '\n'); 
         Album nuevoAlbum(artista, nombreAlbum, aLanzamiento);
@@ -120,7 +122,7 @@ int main() {
     do {
         cout << "\nCatalogo Musical\n";
         cout << "\n----------------\n";
-        cout << "\nMenu Principal\n";
+        cout << "\nMenu Principal:\n";
         cout << "\n----------------\n";
         cout << "1. Agregar album\n";
         cout << "2. Eliminar album\n";
