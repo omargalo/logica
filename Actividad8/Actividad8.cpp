@@ -1,4 +1,4 @@
-// Actividad 6: Proyecto Integrador Etapa 2
+// Actividad 8: Proyecto Integrador Etapa 3
 // Equipo: 17 García López Omar
 
 #include <iostream>
@@ -21,7 +21,8 @@ public:
         this->aLanzamiento = aLanzamiento;
     }
 
-    void mostrarInformacion() {
+    void mostrarInformacion() const {
+        cout << "Detalles del album encontrado:\n ";
         cout << "Artista: " << artista << endl;
         cout << "Nombre del Album: " << nombreAlbum << endl;
         cout << "Lanzamiento: " << aLanzamiento << endl;
@@ -82,32 +83,50 @@ public:
         else {
             cout << "Album no encontrado.\n";
         }
-
-        cout << "Presione Enter para continuar...";
-        cin.get(); // Espera un Enter para continuar
     }
 
     void modificarAlbum() {
-        string artista, nombreAlbum;
-        cout << "Ingresa nombre del artista a modificar: ";
-        artista = leerLinea();
+        string nombreAlbum;
         cout << "Ingresa nombre del album a modificar: ";
         nombreAlbum = leerLinea();
 
-        for (auto& album : catalogo) {
-            if (album.artista == artista && album.nombreAlbum == nombreAlbum) {
+        auto it = find_if(catalogo.begin(), catalogo.end(), [&](const Album& album) {
+            return album.nombreAlbum == nombreAlbum;
+            });
+
+        if (it != catalogo.end()) {
+            it->mostrarInformacion();
+            cout << "\nEstas seguro de modificar el album?\n1 para Si\n2 para No\n";
+            cout << "Ingresa tu opcion: ";
+            int confirmacion;
+            cin >> confirmacion;
+            cin.ignore();
+
+            if (confirmacion == 1) {
+                string artista, nombre;
+                int lanzamiento;
                 cout << "Ingresa nuevo nombre del artista: ";
-                album.artista = leerLinea();
+                getline(cin, artista);
                 cout << "Ingresa nuevo nombre del album: ";
-                album.nombreAlbum = leerLinea();
+                getline(cin, nombre);
                 cout << "Ingresa nueva fecha de lanzamiento: ";
-                cin >> album.aLanzamiento;
+                cin >> lanzamiento;
                 cin.ignore();
-                cout << "Album modificado exitosamente." << endl;
-                return;
+
+                // Actualizar el album
+                it->artista = artista;
+                it->nombreAlbum = nombre;
+                it->aLanzamiento = lanzamiento;
+
+                cout << "Album modificado exitosamente.\n";
+            }
+            else {
+                cout << "Modificación Cancelada.\n";
             }
         }
-        cout << "Album no encontrado." << endl;
+        else {
+            cout << "Album no encontrado.\n";
+        }
     }
 
     void buscarAlbum() {
@@ -127,7 +146,23 @@ public:
             cout << "Album no encontrado." << endl;
         }
     }
+
+    const vector<Album>& obtenerCatalogo() const {
+        return catalogo;
+    }
 };
+
+void mostrarTodos(const vector<Album>& catalogo) {
+    if (catalogo.empty()) {
+        cout << "El catalogo esta vacio." << endl;
+        return;
+    }
+
+    for (const auto& album : catalogo) {
+        album.mostrarInformacion();
+        cout << endl;
+    }
+}
 
 void limpiarPantalla() {
 #ifdef _WIN32
@@ -149,20 +184,20 @@ int main() {
         cout << "\n----------------\n";
         cout << "1. Agregar album\n";
         cout << "2. Eliminar album\n";
-        cout << "3. Modificar album\n";
-        cout << "4. Buscar album\n";
-        cout << "5. Salir\n";
-        cout << "\n";
-        cout << "Elige una opcion: ";
+        cout << "3. Mostrar todos los albumes\n";
+        cout << "4. Modificar album\n";
+        cout << "5. Buscar album\n";
+        cout << "6. Salir\n";
+        cout << "\nElige una opcion: ";
         cin >> opcion;
         if (cin) {
             cin.ignore(10000, '\n');
         }
         else {
-			cin.clear();
-			cin.ignore(10000, '\n');
-			opcion = 0;
-		}
+            cin.clear();
+            cin.ignore(10000, '\n');
+            opcion = 0;
+        }
 
         switch (opcion) {
         case 1:
@@ -172,25 +207,28 @@ int main() {
             catalogo.eliminarAlbum();
             break;
         case 3:
-            catalogo.modificarAlbum();
+            mostrarTodos(catalogo.obtenerCatalogo());
             break;
         case 4:
-            catalogo.buscarAlbum();
+            catalogo.modificarAlbum();
             break;
         case 5:
+            catalogo.buscarAlbum();
+            break;
+        case 6:
             cout << "Saliendo del programa." << endl;
             break;
         default:
             cout << "Opcion no valida. Intente de nuevo." << endl;
         }
 
-        if (opcion != 5) {
-            cout << "\nPresione Enter para continuar...";
+        if (opcion != 6) {
+            cout << "\nPresione Enter para regresar al Menu principal...";
             cin.get();
             limpiarPantalla();
         }
 
-    } while (opcion != 5);
+    } while (opcion != 6);
 
     return 0;
 }
